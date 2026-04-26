@@ -1,3 +1,6 @@
+This have slipped here, let's work on it later.
+
+```rust
 use crate::color;
 use crate::io;
 use image::DynamicImage;
@@ -28,3 +31,5 @@ pub fn convert_to_ascii(img: &DynamicImage, factor: u32) -> String {
     }
     return ascii;
 }
+
+```

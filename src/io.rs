@@ -1,51 +1,56 @@
-use image::DynamicImage;
-use image::imageops::FilterType;
-use image::io::Reader as ImageReader;
+use image;
+use std::fmt;
 
-pub fn read_image(path: &str) -> Result<DynamicImage, String> {
-    let img = ImageReader::open(path)
-        .map_err(|e| format!("Error opening image: {}", e))?
-        .decode()
-        .map_err(|e| format!("Error decoding image: {}", e))?;
-    Ok(img)
+pub struct RawImage {
+    pub data: Vec<f32>,
+    pub width: u32,
+    pub height: u32,
+    pub channels: usize,
 }
 
-pub fn save_image(path: &str, img: &DynamicImage) -> Result<(), String> {
-    img.save(path)
-        .map_err(|e| format!("Error saving image: {}", e))
+impl fmt::Display for RawImage {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(
+            f,
+            "RawImage {{ data: {:?}, width: {}, height: {}, channels: {} }}",
+            self.data, self.width, self.height, self.channels
+        )
+    }
 }
 
-pub fn resize_image(img: &DynamicImage, width: u32, height: u32, exact: bool) -> DynamicImage {
-    if exact {
-        img.resize_exact(width, height, FilterType::Nearest)
+pub fn load_image_raw(path: &str) -> Result<RawImage, String> {
+    let img = image::open(path).map_err(|e| format!("Failed to load image: {}", e))?;
+    let img = img.to_rgb8();
+    let (w, h) = img.dimensions();
+    let channels = 3;
+    let data = img.into_raw().iter().map(|&x| x as f32 / 255.0).collect();
+    return Ok(RawImage {
+        data,
+        width: w,
+        height: h,
+        channels,
+    });
+}
+
+pub fn save_image_raw(path: &str, img: &RawImage) -> Result<(), String> {
+    let u8_data = img
+        .data
+        .iter()
+        .map(|&x| (x * 255.0) as u8)
+        .collect::<Vec<u8>>();
+
+    if img.channels == 1 {
+        image::save_buffer(path, &u8_data, img.width, img.height, image::ColorType::L8)
+    } else if img.channels == 3 {
+        image::save_buffer(
+            path,
+            &u8_data,
+            img.width,
+            img.height,
+            image::ColorType::Rgb8,
+        )
     } else {
-        img.resize(width, height, FilterType::Nearest)
+        return Err(format!("Unsupported number of channels: {}", img.channels));
     }
-}
-
-pub fn crop_image(img: &DynamicImage, x: u32, y: u32, width: u32, height: u32) -> DynamicImage {
-    img.crop_imm(x, y, width, height)
-}
-
-pub fn rotate_image(img: &DynamicImage, angle: f64) -> Result<DynamicImage, String> {
-    match angle {
-        90.0 => Ok(img.rotate90()),
-        180.0 => Ok(img.rotate180()),
-        270.0 => Ok(img.rotate270()),
-        _ => Err(format!(
-            "Invalid angle: {}, valid values are 90, 180, and 270",
-            angle
-        )),
-    }
-}
-
-pub fn flip_image(img: &DynamicImage, horizontal: bool, vertical: bool) -> DynamicImage {
-    let mut flipped = img.clone();
-    if horizontal {
-        flipped = flipped.fliph();
-    }
-    if vertical {
-        flipped = flipped.flipv();
-    }
-    flipped
+    .map_err(|e| format!("Failed to save image: {}", e))
 }

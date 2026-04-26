@@ -1,16 +1,11 @@
-mod ascii;
-mod color;
+mod getinfo;
 mod io;
+mod transformcolor;
 
 fn main() {
-    let path = "images/dog_in_car.jpg";
-    let img = match io::read_image(path) {
-        Ok(img) => img,
-        Err(e) => panic!("Error: {}", e),
-    };
-
-    let ascii = ascii::convert_to_ascii(&img, 3);
-    println!("{}", ascii);
-
-    println!("Hello, world!");
+    let mut image = io::load_image_raw("images/dog_in_car.jpg").unwrap();
+    let gray_image = transformcolor::make_grasyscale(&mut image);
+    let histogram = getinfo::get_image_histogram(&gray_image);
+    let histogram_normalized = getinfo::get_image_histogram_normalized(&histogram);
+    getinfo::print_histogram_normalized(&histogram_normalized);
 }
