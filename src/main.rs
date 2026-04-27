@@ -5,7 +5,6 @@ mod transformcolor;
 fn main() {
     let mut image = io::load_image_raw("images/dog_in_car.jpg").unwrap();
     let gray_image = transformcolor::make_grasyscale(&mut image);
-    let histogram = getinfo::get_image_histogram(&gray_image);
-    let histogram_normalized = getinfo::get_image_histogram_normalized(&histogram);
-    getinfo::print_histogram_normalized(&histogram_normalized);
+    let rotated_image = transformcolor::rotate_image(&image, 180.0).unwrap();
+    io::save_image_raw("images/dog_in_car_rotated.jpg", &rotated_image);
 }
