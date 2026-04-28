@@ -30,7 +30,7 @@ pub fn rotate_image(image: &RawImage, angle: f64) -> Result<RawImage, String> {
         90.0 => return Ok(rotate90(image)),
         0.0 => return Ok(clone_image(image)),
         180.0 => return Ok(rotate180(image)),
-        // 270.0 => return Ok(rotate270(image)),
+        270.0 => return Ok(rotate270(image)),
         _ => return Err(format!("Invalid angle: {}", angle)),
     }
 }
@@ -71,6 +71,36 @@ pub fn access_pixel_at_coord(image: &RawImage, x: u32, y: u32) -> Pixel {
             b: 0.0,
             a: 0.0,
         };
+    }
+}
+
+pub fn rotate270(image: &RawImage) -> RawImage {
+    let mut new_data = Vec::with_capacity(image.data.len());
+    let new_width = image.height;
+    let new_height = image.width;
+
+    for y in 0..new_height {
+        for x in 0..new_width {
+            let src_x = image.width - y - 1;
+            let src_y = x;
+
+            let pixel = access_pixel_at_coord(image, src_x, src_y);
+            if image.channels == 1 {
+                new_data.push(pixel.r);
+            }
+            if image.channels == 3 {
+                new_data.push(pixel.r);
+                new_data.push(pixel.g);
+                new_data.push(pixel.b);
+            }
+        }
+    }
+    assert!(new_data.len() == image.data.len());
+    RawImage {
+        data: new_data,
+        width: image.height,
+        height: image.width,
+        channels: image.channels,
     }
 }
 
