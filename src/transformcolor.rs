@@ -30,7 +30,7 @@ pub fn rotate_image(image: &RawImage, angle: f64) -> Result<RawImage, String> {
         90.0 => return Ok(rotate90(image)),
         0.0 => return Ok(clone_image(image)),
         180.0 => return Ok(rotate180(image)),
-        270.0 => return Ok(rotate270(image)),
+        // 270.0 => return Ok(rotate270(image)),
         _ => return Err(format!("Invalid angle: {}", angle)),
     }
 }
@@ -83,7 +83,6 @@ pub fn rotate180(image: &RawImage) -> RawImage {
         for x in 0..new_width {
             let src_x = image.width - x - 1;
             let src_y = image.height - y - 1;
-            println!("src_x: {}, src_y: {}", src_x, src_y);
 
             let pixel = access_pixel_at_coord(image, src_x, src_y);
             if image.channels == 1 {
@@ -96,7 +95,6 @@ pub fn rotate180(image: &RawImage) -> RawImage {
             }
         }
     }
-    println!("new_data: {:?}", new_data);
     assert!(new_data.len() == image.data.len());
     return RawImage {
         data: new_data,
