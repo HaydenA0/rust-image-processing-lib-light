@@ -25,12 +25,12 @@ pub fn make_grasyscale(image: &mut RawImage) -> RawImage {
     };
 }
 
-pub fn rotate_image(image: &RawImage, angle: f64) -> Result<RawImage, String> {
+pub fn rotate_image(image: &RawImage, angle: u32) -> Result<RawImage, String> {
     match angle {
-        90.0 => return Ok(rotate90(image)),
-        0.0 => return Ok(clone_image(image)),
-        180.0 => return Ok(rotate180(image)),
-        270.0 => return Ok(rotate270(image)),
+        90 => return Ok(rotate90(image)),
+        0 => return Ok(clone_image(image)),
+        180 => return Ok(rotate180(image)),
+        270 => return Ok(rotate270(image)),
         _ => return Err(format!("Invalid angle: {}", angle)),
     }
 }
