@@ -1,4 +1,4 @@
-use crate::io::RawImage;
+use crate::includes::RawImage;
 use std::collections::HashMap;
 
 pub fn get_image_info(image: &RawImage) -> (f32, f32, f32, f32, f32, f32, f32) {
@@ -13,8 +13,8 @@ pub fn get_image_info(image: &RawImage) -> (f32, f32, f32, f32, f32, f32, f32) {
         max,
         min,
         stddev,
-        image.width as f32,
-        image.height as f32,
+        image.x_size as f32,
+        image.y_size as f32,
     );
 }
 
@@ -27,7 +27,7 @@ pub fn get_image_info_string(image: &RawImage) -> String {
 
     format!(
         "Image info:\n\tDimensions: {}x{}\n\tChannels: {}\n\tMean: {}\n\tStddev: {}\n\tMax: {}\n\tMin: {}\n\tMedian: {}",
-        image.width, image.height, image.channels, mean, stddev, max, min, median
+        image.x_size, image.y_size, image.channels, mean, stddev, max, min, median
     )
 }
 

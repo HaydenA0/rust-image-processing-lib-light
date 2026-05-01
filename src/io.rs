@@ -1,19 +1,13 @@
+use crate::includes::RawImage;
 use image;
 use std::fmt;
-
-pub struct RawImage {
-    pub data: Vec<f32>,
-    pub width: u32,
-    pub height: u32,
-    pub channels: usize,
-}
 
 impl fmt::Display for RawImage {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
             f,
             "RawImage {{ data: {:?}, width: {}, height: {}, channels: {} }}",
-            self.data, self.width, self.height, self.channels
+            self.data, self.x_size, self.y_size, self.channels
         )
     }
 }
@@ -26,8 +20,8 @@ pub fn load_image_raw(path: &str) -> Result<RawImage, String> {
     let data = img.into_raw().iter().map(|&x| x as f32 / 255.0).collect();
     return Ok(RawImage {
         data,
-        width: w,
-        height: h,
+        x_size: w,
+        y_size: h,
         channels,
     });
 }
@@ -40,13 +34,13 @@ pub fn save_image_raw(path: &str, img: &RawImage) -> Result<(), String> {
         .collect::<Vec<u8>>();
 
     if img.channels == 1 {
-        image::save_buffer(path, &u8_data, img.width, img.height, image::ColorType::L8)
+        image::save_buffer(path, &u8_data, img.x_size, img.y_size, image::ColorType::L8)
     } else if img.channels == 3 {
         image::save_buffer(
             path,
             &u8_data,
-            img.width,
-            img.height,
+            img.x_size,
+            img.y_size,
             image::ColorType::Rgb8,
         )
     } else {

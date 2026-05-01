@@ -1,12 +1,6 @@
-use crate::io::RawImage;
-// TODO : handle cases where cooardinates are out of bounds
+use crate::includes::{Pixel, RawImage, access_pixel_at_coord};
 
-struct Pixel {
-    r: f32,
-    g: f32,
-    b: f32,
-    a: f32,
-}
+// TODO : handle cases where cooardinates are out of bounds
 
 pub fn make_grasyscale(image: &mut RawImage) -> RawImage {
     assert!(image.channels == 3);
@@ -19,8 +13,8 @@ pub fn make_grasyscale(image: &mut RawImage) -> RawImage {
     }
     return RawImage {
         data: new_data,
-        width: image.width,
-        height: image.height,
+        x_size: image.x_size,
+        y_size: image.y_size,
         channels: 1,
     };
 }
@@ -38,50 +32,20 @@ pub fn rotate_image(image: &RawImage, angle: u32) -> Result<RawImage, String> {
 fn clone_image(image: &RawImage) -> RawImage {
     return RawImage {
         data: image.data.clone(),
-        width: image.width,
-        height: image.height,
+        x_size: image.x_size,
+        y_size: image.y_size,
         channels: image.channels,
     };
 }
 
-pub fn access_pixel_at_coord(image: &RawImage, x: u32, y: u32) -> Pixel {
-    if image.channels == 1 {
-        let index = y * image.width + x;
-        return Pixel {
-            r: image.data[index as usize],
-            g: image.data[index as usize],
-            b: image.data[index as usize],
-            a: 1.0,
-        };
-    } else if image.channels == 3 {
-        let r_index = y * image.width * 3 + x * 3;
-        let g_index = r_index + 1;
-        let b_index = r_index + 2;
-        return Pixel {
-            r: image.data[r_index as usize],
-            g: image.data[g_index as usize],
-            b: image.data[b_index as usize],
-            a: 1.0,
-        };
-    } else {
-        // TODO : handle other number of channels better
-        return Pixel {
-            r: 0.0,
-            g: 0.0,
-            b: 0.0,
-            a: 0.0,
-        };
-    }
-}
-
 pub fn rotate270(image: &RawImage) -> RawImage {
     let mut new_data = Vec::with_capacity(image.data.len());
-    let new_width = image.height;
-    let new_height = image.width;
+    let new_width = image.y_size;
+    let new_height = image.x_size;
 
     for y in 0..new_height {
         for x in 0..new_width {
-            let src_x = image.width - y - 1;
+            let src_x = image.x_size - y - 1;
             let src_y = x;
 
             let pixel = access_pixel_at_coord(image, src_x, src_y);
@@ -98,21 +62,21 @@ pub fn rotate270(image: &RawImage) -> RawImage {
     assert!(new_data.len() == image.data.len());
     RawImage {
         data: new_data,
-        width: image.height,
-        height: image.width,
+        x_size: image.y_size,
+        y_size: image.x_size,
         channels: image.channels,
     }
 }
 
 pub fn rotate180(image: &RawImage) -> RawImage {
     let mut new_data = Vec::with_capacity(image.data.len());
-    let new_height = image.height;
-    let new_width = image.width;
+    let new_height = image.y_size;
+    let new_width = image.x_size;
 
     for y in 0..new_height {
         for x in 0..new_width {
-            let src_x = image.width - x - 1;
-            let src_y = image.height - y - 1;
+            let src_x = image.x_size - x - 1;
+            let src_y = image.y_size - y - 1;
 
             let pixel = access_pixel_at_coord(image, src_x, src_y);
             if image.channels == 1 {
@@ -128,21 +92,21 @@ pub fn rotate180(image: &RawImage) -> RawImage {
     assert!(new_data.len() == image.data.len());
     return RawImage {
         data: new_data,
-        width: image.width,
-        height: image.height,
+        x_size: image.x_size,
+        y_size: image.y_size,
         channels: image.channels,
     };
 }
 
 pub fn rotate90(image: &RawImage) -> RawImage {
     let mut new_data = Vec::with_capacity(image.data.len());
-    let new_height = image.width;
-    let new_width = image.height;
+    let new_height = image.x_size;
+    let new_width = image.y_size;
 
     for y in 0..new_height {
         for x in 0..new_width {
             let src_x = y;
-            let src_y = image.height - x - 1;
+            let src_y = image.y_size - x - 1;
             let pixel = access_pixel_at_coord(image, src_x, src_y);
             if image.channels == 1 {
                 new_data.push(pixel.r);
@@ -156,18 +120,18 @@ pub fn rotate90(image: &RawImage) -> RawImage {
     }
     return RawImage {
         data: new_data,
-        width: image.height,
-        height: image.width,
+        x_size: image.y_size,
+        y_size: image.x_size,
         channels: image.channels,
     };
 }
 
 pub fn change_pixel_at_coord(image: &mut RawImage, x: u32, y: u32, pixel: Pixel) {
     if image.channels == 1 {
-        let index = y * image.width + x;
+        let index = y * image.x_size + x;
         image.data[index as usize] = pixel.r;
     } else if image.channels == 3 {
-        let r_index = y * image.width * 3 + x * 3;
+        let r_index = y * image.x_size * 3 + x * 3;
         let g_index = r_index + 1;
         let b_index = r_index + 2;
         image.data[r_index as usize] = pixel.r;
