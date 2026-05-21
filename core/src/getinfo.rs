@@ -7,7 +7,7 @@ pub fn get_image_info(image: &RawImage) -> (f32, f32, f32, f32, f32, f32, f32) {
     let max = get_image_max(image);
     let min = get_image_min(image);
     let stddev = get_image_stddev(image, mean);
-    return (
+    (
         mean,
         median,
         max,
@@ -15,7 +15,7 @@ pub fn get_image_info(image: &RawImage) -> (f32, f32, f32, f32, f32, f32, f32) {
         stddev,
         image.x_size as f32,
         image.y_size as f32,
-    );
+    )
 }
 
 pub fn get_image_info_string(image: &RawImage) -> String {
@@ -37,7 +37,7 @@ pub fn get_image_mean(image: &RawImage) -> f32 {
     for &x in &image.data {
         sum += x;
     }
-    return sum / image.data.len() as f32;
+    sum / image.data.len() as f32
 }
 
 pub fn get_image_stddev(image: &RawImage, mean: f32) -> f32 {
@@ -46,7 +46,7 @@ pub fn get_image_stddev(image: &RawImage, mean: f32) -> f32 {
     for &x in &image.data {
         sum += (x - mean).powi(2);
     }
-    return (sum / image.data.len() as f32).sqrt();
+    (sum / image.data.len() as f32).sqrt()
 }
 
 pub fn get_image_max(image: &RawImage) -> f32 {
@@ -57,7 +57,7 @@ pub fn get_image_max(image: &RawImage) -> f32 {
             max = x;
         }
     }
-    return max;
+    max
 }
 
 pub fn get_image_min(image: &RawImage) -> f32 {
@@ -68,14 +68,14 @@ pub fn get_image_min(image: &RawImage) -> f32 {
             min = x;
         }
     }
-    return min;
+    min
 }
 
 pub fn get_image_median(image: &RawImage) -> f32 {
     assert!(image.channels == 1);
     let mut sorted = image.data.clone();
     sorted.sort_by(|a, b| a.partial_cmp(b).unwrap());
-    return sorted[sorted.len() / 2];
+    sorted[sorted.len() / 2]
 }
 
 pub fn get_image_histogram(image: &RawImage) -> HashMap<u8, u32> {
@@ -85,7 +85,7 @@ pub fn get_image_histogram(image: &RawImage) -> HashMap<u8, u32> {
         let bucket = (x * 255.0) as u8;
         *histogram.entry(bucket).or_insert(0) += 1;
     }
-    return histogram;
+    histogram
 }
 
 pub fn get_image_histogram_normalized(histogram: &HashMap<u8, u32>) -> HashMap<u8, f32> {
@@ -95,7 +95,7 @@ pub fn get_image_histogram_normalized(histogram: &HashMap<u8, u32>) -> HashMap<u
         let normalized_count = *count as f32 / total as f32;
         *normalized_histogram.entry(bucket).or_insert(0.0) += normalized_count;
     }
-    return normalized_histogram;
+    normalized_histogram
 }
 
 pub fn print_histogram(histogram: &HashMap<u8, u32>) {

@@ -9,31 +9,31 @@ pub fn make_grasyscale(image: &mut RawImage) -> RawImage {
         let b = x[2];
         new_data.push((r + g + b) / 3.0);
     }
-    return RawImage {
+    RawImage {
         data: new_data,
         x_size: image.x_size,
         y_size: image.y_size,
         channels: 1,
-    };
+    }
 }
 
 pub fn rotate_image(image: &RawImage, angle: u32) -> Result<RawImage, String> {
     match angle {
-        90 => return Ok(rotate90(image)),
-        0 => return Ok(clone_image(image)),
-        180 => return Ok(rotate180(image)),
-        270 => return Ok(rotate270(image)),
-        _ => return Err(format!("Invalid angle: {}", angle)),
+        90 => Ok(rotate90(image)),
+        0 => Ok(clone_image(image)),
+        180 => Ok(rotate180(image)),
+        270 => Ok(rotate270(image)),
+        _ => Err(format!("Invalid angle: {}", angle)),
     }
 }
 
 fn clone_image(image: &RawImage) -> RawImage {
-    return RawImage {
+    RawImage {
         data: image.data.clone(),
         x_size: image.x_size,
         y_size: image.y_size,
         channels: image.channels,
-    };
+    }
 }
 
 pub fn rotate270(image: &RawImage) -> RawImage {
@@ -88,12 +88,12 @@ pub fn rotate180(image: &RawImage) -> RawImage {
         }
     }
     assert!(new_data.len() == image.data.len());
-    return RawImage {
+    RawImage {
         data: new_data,
         x_size: image.x_size,
         y_size: image.y_size,
         channels: image.channels,
-    };
+    }
 }
 
 pub fn rotate90(image: &RawImage) -> RawImage {
@@ -116,12 +116,12 @@ pub fn rotate90(image: &RawImage) -> RawImage {
             }
         }
     }
-    return RawImage {
+    RawImage {
         data: new_data,
         x_size: image.y_size,
         y_size: image.x_size,
         channels: image.channels,
-    };
+    }
 }
 
 pub fn change_pixel_at_coord(image: &mut RawImage, x: u32, y: u32, pixel: Pixel) {

@@ -18,12 +18,12 @@ impl fmt::Display for RawImage {
 
 impl Clone for RawImage {
     fn clone(&self) -> Self {
-        return RawImage {
+        RawImage {
             data: self.data.clone(),
             x_size: self.x_size,
             y_size: self.y_size,
             channels: self.channels,
-        };
+        }
     }
 }
 
@@ -37,12 +37,12 @@ impl Add for RawImage {
         for i in 0..self.data.len() {
             new_data.push(self.data[i] + rhs.data[i]);
         }
-        return RawImage {
+        RawImage {
             data: new_data,
             x_size: self.x_size,
             y_size: self.y_size,
             channels: self.channels,
-        };
+        }
     }
 }
 
@@ -56,12 +56,12 @@ impl Sub for RawImage {
         for i in 0..self.data.len() {
             new_data.push(self.data[i] - rhs.data[i]);
         }
-        return RawImage {
+        RawImage {
             data: new_data,
             x_size: self.x_size,
             y_size: self.y_size,
             channels: self.channels,
-        };
+        }
     }
 }
 
@@ -87,29 +87,29 @@ pub fn access_pixel_at_coord(image: &RawImage, x: u32, y: u32) -> Pixel {
     );
     if image.channels == 1 {
         let index = y * image.x_size + x;
-        return Pixel {
+        Pixel {
             r: image.data[index as usize],
             g: image.data[index as usize],
             b: image.data[index as usize],
             a: 1.0,
-        };
+        }
     } else if image.channels == 3 {
         let r_index = y * image.x_size * 3 + x * 3;
         let g_index = r_index + 1;
         let b_index = r_index + 2;
-        return Pixel {
+        Pixel {
             r: image.data[r_index as usize],
             g: image.data[g_index as usize],
             b: image.data[b_index as usize],
             a: 1.0,
-        };
+        }
     } else {
         // TODO : handle other number of channels better
-        return Pixel {
+        Pixel {
             r: 0.0,
             g: 0.0,
             b: 0.0,
             a: 0.0,
-        };
+        }
     }
 }

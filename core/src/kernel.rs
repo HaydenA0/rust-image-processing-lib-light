@@ -7,10 +7,10 @@ pub fn normalize_kernel(kernel: &[Vec<f32>]) -> Vec<Vec<f32>> {
             sum += val;
         }
     }
-    return kernel
+    kernel
         .iter()
         .map(|row| row.iter().map(|val| val / sum).collect())
-        .collect();
+        .collect()
 }
 
 pub fn apply_kernel(image: &RawImage, kernel: &[Vec<f32>]) -> RawImage {
@@ -53,7 +53,7 @@ pub fn apply_kernel(image: &RawImage, kernel: &[Vec<f32>]) -> RawImage {
 
 pub fn make_gaussian_kernel(size: usize, sigma: f32) -> Vec<Vec<f32>> {
     let mut kernel = vec![vec![0.0; size]; size];
-    let half = (size / 2) as usize;
+    let half = (size / 2);
     let sigma2 = sigma * sigma;
 
     for y in 0..size {
@@ -66,7 +66,7 @@ pub fn make_gaussian_kernel(size: usize, sigma: f32) -> Vec<Vec<f32>> {
     }
     kernel = normalize_kernel(&kernel);
 
-    return kernel;
+    kernel
 }
 
 pub fn apply_gaussian_blur(image: &RawImage, sigma: f32, size: usize) -> RawImage {
