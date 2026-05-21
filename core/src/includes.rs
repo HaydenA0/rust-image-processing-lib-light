@@ -1,11 +1,13 @@
 use std::fmt;
-use std::ops::{Add, Sub};
+use std::ops::{Add, Mul, Sub};
+
 pub struct RawImage {
     pub data: Vec<f32>,
     pub x_size: u32,
     pub y_size: u32,
     pub channels: usize,
 }
+
 impl fmt::Display for RawImage {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
@@ -33,7 +35,7 @@ impl Add for RawImage {
         assert_eq!(self.x_size, rhs.x_size);
         assert_eq!(self.y_size, rhs.y_size);
         assert_eq!(self.channels, rhs.channels);
-        let mut new_data = Vec::new();
+        let mut new_data = Vec::with_capacity(self.data.len());
         for i in 0..self.data.len() {
             new_data.push(self.data[i] + rhs.data[i]);
         }
@@ -52,7 +54,7 @@ impl Sub for RawImage {
         assert_eq!(self.x_size, rhs.x_size);
         assert_eq!(self.y_size, rhs.y_size);
         assert_eq!(self.channels, rhs.channels);
-        let mut new_data = Vec::new();
+        let mut new_data = Vec::with_capacity(self.data.len());
         for i in 0..self.data.len() {
             new_data.push(self.data[i] - rhs.data[i]);
         }
@@ -62,6 +64,61 @@ impl Sub for RawImage {
             y_size: self.y_size,
             channels: self.channels,
         }
+    }
+}
+impl Mul<RawImage> for RawImage {
+    type Output = RawImage;
+    fn mul(self, rhs: RawImage) -> Self::Output {
+        assert_eq!(self.x_size, rhs.x_size);
+        assert_eq!(self.y_size, rhs.y_size);
+        assert_eq!(self.channels, rhs.channels);
+
+        let new_data = self
+            .data
+            .into_iter()
+            .zip(rhs.data)
+            .map(|(lhs_val, rhs_val)| lhs_val * rhs_val)
+            .collect();
+
+        RawImage {
+            data: new_data,
+            x_size: self.x_size,
+            y_size: self.y_size,
+            channels: self.channels,
+        }
+    }
+}
+
+impl Mul<f32> for RawImage {
+    type Output = RawImage;
+    fn mul(self, rhs: f32) -> Self::Output {
+        let new_data = self.data.into_iter().map(|val| val * rhs).collect();
+        RawImage {
+            data: new_data,
+            x_size: self.x_size,
+            y_size: self.y_size,
+            channels: self.channels,
+        }
+    }
+}
+
+pub fn img_power(img: &RawImage) -> RawImage {
+    let new_data = img.data.iter().map(|&val| val.powi(2)).collect();
+    RawImage {
+        data: new_data,
+        x_size: img.x_size,
+        y_size: img.y_size,
+        channels: img.channels,
+    }
+}
+
+pub fn img_sqrt(img: &RawImage) -> RawImage {
+    let new_data = img.data.iter().map(|&val| val.sqrt()).collect();
+    RawImage {
+        data: new_data,
+        x_size: img.x_size,
+        y_size: img.y_size,
+        channels: img.channels,
     }
 }
 

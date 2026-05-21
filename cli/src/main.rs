@@ -4,13 +4,18 @@ use image_core::kernel;
 use image_core::transformcolor;
 
 fn main() {
-    let mut image = io::load_image_raw("images/dog_in_car.jpg").unwrap();
+    let input_image_path = "../images/dog_in_car.jpg";
+    let output_image_path = "../images/dog_in_car_sobel.jpg";
+    let mut image = io::load_image_raw(input_image_path).unwrap();
+
     let gray_image = transformcolor::make_grasyscale(&mut image);
-    let kernel = kernel::make_gaussian_kernel(7, 9.0);
-    let new_image = kernel::apply_kernel(&gray_image, &kernel);
-    let diff = new_image.clone() - gray_image;
-    io::save_image_raw("images/dog_in_car_kernel.jpg", &new_image).unwrap();
-    println!("Saved image: dog_in_car_kernel.jpg");
-    io::save_image_raw("images/dog_in_car_diff.jpg", &diff).unwrap();
-    println!("Saved image: dog_in_car_diff.jpg");
+    let sobel_image = kernel::apply_sobel(&gray_image);
+    _ = io::save_image_raw(output_image_path, &sobel_image);
+    println!(
+        "Full path: {}",
+        std::path::Path::new(input_image_path)
+            .canonicalize()
+            .unwrap()
+            .display()
+    );
 }

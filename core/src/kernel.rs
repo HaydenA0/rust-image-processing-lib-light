@@ -1,4 +1,4 @@
-use crate::includes::RawImage;
+use crate::includes::{img_power, img_sqrt, RawImage};
 
 pub fn normalize_kernel(kernel: &[Vec<f32>]) -> Vec<Vec<f32>> {
     let mut sum = 0.0;
@@ -7,10 +7,10 @@ pub fn normalize_kernel(kernel: &[Vec<f32>]) -> Vec<Vec<f32>> {
             sum += val;
         }
     }
-    return kernel
+    kernel
         .iter()
         .map(|row| row.iter().map(|val| val / sum).collect())
-        .collect();
+        .collect()
 }
 
 pub fn apply_kernel(image: &RawImage, kernel: &[Vec<f32>]) -> RawImage {
@@ -53,7 +53,7 @@ pub fn apply_kernel(image: &RawImage, kernel: &[Vec<f32>]) -> RawImage {
 
 pub fn make_gaussian_kernel(size: usize, sigma: f32) -> Vec<Vec<f32>> {
     let mut kernel = vec![vec![0.0; size]; size];
-    let half = (size / 2) as usize;
+    let half = size / 2;
     let sigma2 = sigma * sigma;
 
     for y in 0..size {
@@ -66,7 +66,7 @@ pub fn make_gaussian_kernel(size: usize, sigma: f32) -> Vec<Vec<f32>> {
     }
     kernel = normalize_kernel(&kernel);
 
-    return kernel;
+    kernel
 }
 
 pub fn apply_gaussian_blur(image: &RawImage, sigma: f32, size: usize) -> RawImage {
@@ -74,4 +74,31 @@ pub fn apply_gaussian_blur(image: &RawImage, sigma: f32, size: usize) -> RawImag
     apply_kernel(image, &kernel)
 }
 
-// pub fn apply_sobel_x(image: &RawImage) -> RawImage {}
+pub fn apply_sobel_x(image: &RawImage) -> RawImage {
+    let kernel = vec![
+        vec![-1.0, 0.0, 1.0],
+        vec![-2.0, 0.0, 2.0],
+        vec![-1.0, 0.0, 1.0],
+    ];
+    apply_kernel(image, &kernel)
+}
+
+pub fn apply_sobel_y(image: &RawImage) -> RawImage {
+    let kernel = vec![
+        vec![-1.0, -2.0, -1.0],
+        vec![0.0, 0.0, 0.0],
+        vec![1.0, 2.0, 1.0],
+    ];
+    apply_kernel(image, &kernel)
+}
+
+pub fn apply_sobel(image: &RawImage) -> RawImage {
+    let image_x = apply_sobel_x(image);
+    let image_y = apply_sobel_y(image);
+
+    let image_x2 = img_power(&image_x);
+    let image_y2 = img_power(&image_y);
+    let image_xy = image_x2 + image_y2;
+
+    img_sqrt(&image_xy)
+}

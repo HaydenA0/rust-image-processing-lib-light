@@ -3,6 +3,19 @@
 
 ![showcase1_0](./web/showcase/showcase1_0.png)
 
+# How to run
+
+For the cli version :
+
+```bash
+cargo run -p image_cli
+```
+
+For the web version :
+
+```bash
+cargo run -p image_web
+```
 
 
 # Things to add 
@@ -40,5 +53,6 @@
 ### 6. Safety & Debugging Additions
 *   **`is_valid_coord(x: u32, y: u32)`**: A helper to resolve the `TODO` regarding out-of-bounds errors before attempting to access pixel data.
 *   **`to_grayscale_luminance_weighted()`**: Instead of simple averaging, use the perceptually accurate formula: `0.299R + 0.587G + 0.114B`.
+
 
 
