@@ -55,7 +55,6 @@ pub fn make_gaussian_kernel(size: usize, sigma: f32) -> Vec<Vec<f32>> {
     let mut kernel = vec![vec![0.0; size]; size];
     let half = (size / 2) as usize;
     let sigma2 = sigma * sigma;
-    let mut sum = 0.0;
 
     for y in 0..size {
         for x in 0..size {
@@ -63,15 +62,9 @@ pub fn make_gaussian_kernel(size: usize, sigma: f32) -> Vec<Vec<f32>> {
             let new_y = y as f32 - half as f32;
             kernel[y][x] = 1.0 / (2.0 * std::f32::consts::PI * sigma2)
                 * (-(new_x * new_x + new_y * new_y) / sigma2).exp();
-            sum += kernel[y][x];
         }
     }
-    // normalize kernel
-    for y in 0..size {
-        for x in 0..size {
-            kernel[y][x] /= sum;
-        }
-    }
+    kernel = normalize_kernel(&kernel);
 
     return kernel;
 }
@@ -80,3 +73,5 @@ pub fn apply_gaussian_blur(image: &RawImage, sigma: f32, size: usize) -> RawImag
     let kernel = make_gaussian_kernel(size, sigma);
     apply_kernel(image, &kernel)
 }
+
+pub fn apply_sobel_x(image: &RawImage) -> RawImage {}

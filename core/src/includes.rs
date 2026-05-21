@@ -72,7 +72,19 @@ pub struct Pixel {
     pub a: f32,
 }
 
+pub fn is_valid_coord(image: &RawImage, x: u32, y: u32) -> bool {
+    x < image.x_size && y < image.y_size
+}
+
 pub fn access_pixel_at_coord(image: &RawImage, x: u32, y: u32) -> Pixel {
+    assert!(
+        is_valid_coord(image, x, y),
+        "pixel coordinate ({}, {}) is out of bounds for image size {}x{}",
+        x,
+        y,
+        image.x_size,
+        image.y_size
+    );
     if image.channels == 1 {
         let index = y * image.x_size + x;
         return Pixel {

@@ -1,6 +1,4 @@
-use crate::includes::{access_pixel_at_coord, Pixel, RawImage};
-
-// TODO : handle cases where cooardinates are out of bounds
+use crate::includes::{access_pixel_at_coord, is_valid_coord, Pixel, RawImage};
 
 pub fn make_grasyscale(image: &mut RawImage) -> RawImage {
     assert!(image.channels == 3);
@@ -127,6 +125,14 @@ pub fn rotate90(image: &RawImage) -> RawImage {
 }
 
 pub fn change_pixel_at_coord(image: &mut RawImage, x: u32, y: u32, pixel: Pixel) {
+    assert!(
+        is_valid_coord(image, x, y),
+        "pixel coordinate ({}, {}) is out of bounds for image size {}x{}",
+        x,
+        y,
+        image.x_size,
+        image.y_size
+    );
     if image.channels == 1 {
         let index = y * image.x_size + x;
         image.data[index as usize] = pixel.r;

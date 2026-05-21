@@ -1,6 +1,5 @@
 mod io;
 
-use image_core::includes::RawImage;
 use image_core::kernel;
 use image_core::transformcolor;
 
