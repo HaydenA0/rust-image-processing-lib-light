@@ -1,9 +1,8 @@
-mod getinfo;
-mod includes;
 mod io;
-mod kernel;
-mod operation;
-mod transformcolor;
+
+use image_core::includes::RawImage;
+use image_core::kernel;
+use image_core::transformcolor;
 
 fn main() {
     let mut image = io::load_image_raw("images/dog_in_car.jpg").unwrap();

@@ -1,9 +1,19 @@
+use std::fmt;
 use std::ops::{Add, Sub};
 pub struct RawImage {
     pub data: Vec<f32>,
     pub x_size: u32,
     pub y_size: u32,
     pub channels: usize,
+}
+impl fmt::Display for RawImage {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(
+            f,
+            "RawImage {{ data: {:?}, width: {}, height: {}, channels: {} }}",
+            self.data, self.x_size, self.y_size, self.channels
+        )
+    }
 }
 
 impl Clone for RawImage {

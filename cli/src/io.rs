@@ -1,16 +1,5 @@
-use crate::includes::RawImage;
 use image;
-use std::fmt;
-
-impl fmt::Display for RawImage {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "RawImage {{ data: {:?}, width: {}, height: {}, channels: {} }}",
-            self.data, self.x_size, self.y_size, self.channels
-        )
-    }
-}
+use image_core::includes::RawImage;
 
 pub fn load_image_raw(path: &str) -> Result<RawImage, String> {
     let img = image::open(path).map_err(|e| format!("Failed to load image: {}", e))?;

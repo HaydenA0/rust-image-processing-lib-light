@@ -1,4 +1,4 @@
-use crate::includes::{Pixel, RawImage, access_pixel_at_coord};
+use crate::includes::{access_pixel_at_coord, Pixel, RawImage};
 
 // TODO : handle cases where cooardinates are out of bounds
 
