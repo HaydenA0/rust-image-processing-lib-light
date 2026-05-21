@@ -12,5 +12,7 @@ fn main() {
     let new_image = kernel::apply_kernel(&gray_image, &kernel);
     let diff = new_image.clone() - gray_image;
     io::save_image_raw("images/dog_in_car_kernel.jpg", &new_image).unwrap();
+    println!("Saved image: dog_in_car_kernel.jpg");
     io::save_image_raw("images/dog_in_car_diff.jpg", &diff).unwrap();
+    println!("Saved image: dog_in_car_diff.jpg");
 }
