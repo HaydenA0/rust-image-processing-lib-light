@@ -74,4 +74,4 @@ pub fn apply_gaussian_blur(image: &RawImage, sigma: f32, size: usize) -> RawImag
     apply_kernel(image, &kernel)
 }
 
-pub fn apply_sobel_x(image: &RawImage) -> RawImage {}
+// pub fn apply_sobel_x(image: &RawImage) -> RawImage {}
